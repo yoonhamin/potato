@@ -2,9 +2,6 @@ import 'package:vibration/vibration.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
-
-
 /*
 playAlarm() 함수
 
@@ -14,29 +11,35 @@ playAlarm() 함수
 
 */
 
-
 void playAlarm() async {
+
   print("[F01Alarm01] : 알람 울림 작동");
 
   // ========================================
-
   // 소리
-  await _audioPlayer.play(UrlSource('https://www.soundjay.com/buttons/beep-01a.mp3'));
+
+  final AudioPlayer audioPlayer = AudioPlayer();
+
+  await audioPlayer.play(
+      UrlSource('https://www.soundjay.com/buttons/beep-01a.mp3')
+  );
   // 에셋에 파일이 없으면 인터넷 URL로 대체 < 즉 나중에 음원 리소스  추가하자
 
   // ========================================
-
   // 진동
+
   if (await Vibration.hasVibrator() ?? false) {
-    Vibration.vibrate(duration: 5000); // 5000ms = 5초
+    Vibration.vibrate(
+      pattern: [0, 500, 500, 500, 500, 500],
+    );
   }
 
   // ========================================
-
   // 시간
-  Timer(const Duration(seconds: 5), () {
-    _audioPlayer.stop();
-    print("[F01Alarm01] : 알람 울림 종료");
-  });
+
+  await Future.delayed(const Duration(seconds: 5));
+  await audioPlayer.stop();
+
+  print("[F01Alarm02] : 알람 울림 종료");
 }
 
